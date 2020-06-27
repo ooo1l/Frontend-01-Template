@@ -1,0 +1,49 @@
+<style>
+    .keywords{
+        color: blue;
+    }
+    .punctuator {
+        color: blueviolet;
+    }
+    .identifier{
+        color: skyblue;
+    }
+</style>
+<pre id="container">
+
+</pre>
+<script>
+// 语法高亮 (匹配javaScript词法分析)
+var source = `
+    function sleep(t){
+        return new Promise(function (resolve) {
+            setTimeout(resolve, t)
+        })
+    }
+`
+var regexp = /(function|new|return)|([ \t\n\r]+)|([a-zA-Z][a-zA-Z0-9]*)|([\(\)\{\}\,\;])/g
+
+var dictionary = ["keywords", "whitespace", "identifier", "punctuator"] // identifier 标识符， punctuator 标点符号
+
+var token = null
+var lastIndex = 0
+
+var container = document.getElementById('container')
+
+do {
+    // 通过async 可以在大段文字匹配中 增加进度条的显示
+    lastIndex = regexp.lastIndex
+    token = regexp.exec(source)
+    if(!token)break
+    let text = document.createElement('span')
+    text.textContent = token[0]
+    console.log(regexp.lastIndex)
+    for(var i = 1; i < 5; i++) {
+        if(token[i]) {
+            text.classList.add(dictionary[i-1])
+            console.log(dictionary[i - 1], token[0])
+        }
+        container.appendChild(text)
+    }
+} while(token)
+</script>
