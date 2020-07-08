@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>drag</title>
+</head>
+<body>
+    <div id="container">
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+    </div>
+    <div id="dragAble" style="width: 100PX;height: 100PX;background-color: pink;display: inline-block"></div>
+    <script>
+        let dragAble = document.getElementById('dragAble')
+
+        let baseX = 0;
+        let baseY = 0;
+
+        document.addEventListener('selectstart', event => {
+            event.preventDefault()
+        })
+        dragAble.addEventListener("mousedown", (event) => {
+            let startX = event.clientX;
+            let startY = event.clientY;
+
+            let move = (event) => {
+                let range = nearest(event.clientX, event.clientY)
+                range.insertNode(dragAble)
+
+
+                // 拖拽移动
+                // let x = baseX + event.clientX - startX
+                // let y = baseY + event.clientY - startY
+
+                // dragAble.style.transform = `translate(${x}px,${y}px)`
+            }
+            let up = (event) => {
+                baseX = baseX + event.clientX - startX
+                baseY = baseY + event.clientY - startY
+                document.removeEventListener("mousemove", move)
+                document.removeEventListener("mouseup", up)
+            }
+            document.addEventListener("mousemove", move)
+            document.addEventListener("mouseup", up)
+        })
+
+        // 给文字建立range的矩阵
+        let ranges = []
+        let container = document.getElementById('container')
+        for(let i = 0; i < container.childNodes[0].textContent.length; i++) {
+            let range = document.createRange()
+            range.setStart(container.childNodes[0], i)
+            range.setEnd(container.childNodes[0], i)
+            ranges.push(range)
+        }
+
+        function nearest(x0, y0) {
+            let nearestRange = null
+            let distance = Infinity
+            for(let range of ranges) {
+                let {x, y} = range.getBoundingClientRect()
+                let d = (x0 - x) ** 2 + (y0 - y) ** 2
+
+                if (d < distance) {
+                    nearestRange = range
+                    distance = d
+                }
+            }
+            return nearestRange
+        }
+    </script>
+</body>
+</html>
