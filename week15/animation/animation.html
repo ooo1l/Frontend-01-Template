@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animation</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        #el,#el3,#el4 {
+            margin: 10px 0;
+            width: 100px;
+            height: 100px;
+            background-color: skyblue;
+        }
+        #el2 {
+            margin: 10px 0;
+            width: 100px;
+            height: 100px;
+            background-color: skyblue;
+            transition: transform ease 5s;
+        }
+    </style>
+</head>
+<body>
+    <div id="el"></div>
+    <div id="el2"></div>
+    <div id="el3"></div>
+    <div id="el4"></div>
+    <button id="pause-btn">pause</button>
+    <button id="resume-btn">resume</button>
+    <button id="el3-start">el3 start</button>
+    <script type="module">
+        import {Timeline, Animation, colorAnimation} from './src/animation.js'
+        import { cubicBezier } from './src/cubicBezier.js'
+
+        // 缓动函数
+        let linear = t => t
+        let ease = cubicBezier(.25,.1,.25,1)
+
+        let el = document.getElementById('el')
+        let el3 = document.getElementById('el3')
+        let tl = new Timeline
+
+        tl.add(new Animation({
+            object: el.style,
+            property: "transform", 
+            template: v => `translateX(${v}px)`, 
+            start: 0,
+            end: 200, 
+            duration: 5000,
+            delay: 0,
+            timingFunction: ease
+        }))
+        tl.add(new colorAnimation({
+            object: el4.style,
+            property: "backgroundColor",
+            start: { r: 0, g: 0, b: 0, a: 1 }, 
+            end: { r: 255, g: 0, b: 0, a: 1 },
+            duration: 5000, 
+            delay: 0, 
+            timingFunction: ease
+        }))
+
+        tl.start()
+        document.getElementById('el2').style.transform = 'translateX(200px)'
+        document.getElementById('pause-btn').addEventListener('click', () => {
+            tl.pause()
+        })
+        document.getElementById('resume-btn').addEventListener('click', () => {
+            tl.resume()
+        })
+        document.getElementById('el3-start').addEventListener('click', () => {
+            tl.add(new Animation({
+                object: el3.style,
+                property: "transform",
+                template: v => `translateX(${v}px)`,
+                start: 0,
+                end: 200,
+                duration: 5000,
+                delay: 0,
+                timingFunction: ease
+            }), 0)
+        })
+    </script>
+</body>
+</html>
